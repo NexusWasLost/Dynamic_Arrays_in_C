@@ -10,7 +10,11 @@ typedef struct Dynamic_Array{
 Vector init_vector();
 void freeVector(Vector* v);
 void printVectorHealth(Vector* v);
+void printVectorElements(Vector* v);
+void popback(Vector* v);
 void pushback(Vector* v, int element);
+void popAtIndex(Vector* v, size_t index);
+void pushAtIndex(Vector* v, int element, size_t index);
 
 Vector init_vector(){
     Vector v;
@@ -26,6 +30,12 @@ Vector init_vector(){
 void printVectorHealth(Vector* v){
     printf("Current Number of Elements Present: %d\n", v->size);
     printf("Current Vector Capacity: %d\n", v->capacity);
+}
+
+void printVectorElements(Vector* v){
+    for(int x = 0; x < v->size; ++x){
+        printf("Element %d: %d\n", x + 1, v->arr[x]);
+    }
 }
 
 void pushback(Vector* v, int element){
@@ -46,6 +56,56 @@ void pushback(Vector* v, int element){
 
 }
 
+void popback(Vector* v){
+    if(v->arr == NULL){
+        printf("Vector uninitialized, Please reinitialize vector using init_vector()");
+        return;
+    }
+
+    v->arr[v->size] = -1;
+    v->size--;
+}
+
+void pushAtIndex(Vector* v, int element, size_t index){
+    if(index >= v->size){
+        printf("Not that many elements are present\n");
+        return;
+    }
+
+    //safe check
+    if(v->size == v->capacity){
+        printf("No more space for entering new element\n");
+        return;
+    }
+
+    //start at the valid empty slot
+    size_t place_index = v->size;
+    //go in reverse from the end of the vector to just before the specified index
+    //shift the elements by place to the right
+    for(place_index; place_index > index; --place_index){
+        v->arr[place_index] = v->arr[place_index - 1];
+    }
+
+    //insert the element at the given index
+    v->arr[index] = element;
+    v->size++;
+}
+
+void popAtIndex(Vector* v, size_t index){
+    if(index >= v->size){
+        printf("Not that many elements are present");
+        return;
+    }
+
+    for(index; index < v->size - 1; ++index){
+        v->arr[index] = v->arr[index + 1];
+    }
+
+    printf("Current Index: %d\n", index);
+    v->arr[v->size - 1] = -1;
+    v->size--;
+}
+
 void freeVector(Vector* v){
     if(v->arr == NULL) return;
     free(v->arr);
@@ -58,33 +118,24 @@ int main(){
 
     Vector v = init_vector();
 
-    // pushback(&v, 69);
-    // pushback(&v, 79);
-    // pushback(&v, 89);
-    // pushback(&v, 99);
-    // pushback(&v, 109);
-    // pushback(&v, 119);
-    // pushback(&v, 129);
-    // pushback(&v, 139);
-    // pushback(&v, 149);
-    // pushback(&v, 159);
-    // pushback(&v, 169);
-    // pushback(&v, 179);
-    // pushback(&v, 189);
-    // pushback(&v, 199);
-
     int input = 0;
     printf("Enter the number of elements: ");
     scanf("%d", &input);
 
-    for(int x = 0; x <= input; ++x){
+    for(int x = 0; x < input; ++x){
         pushback(&v, x + 1);
     }
 
-    for(int x = 0; x < v.size; ++x){
-        printf("Element %d: %d\n", x + 1, v.arr[x]);
-    }
-
+    // printVectorElements(&v);
+    printf("Element at index 0: %d\n", v.arr[0]);
+    printf("Element at index 1: %d\n", v.arr[1]);
     printVectorHealth(&v);
+    pushAtIndex(&v, 69, 0);
+    // printVectorElements(&v);
+    printf("Element at index 0: %d\n", v.arr[0]);
+    printf("Element at index 1: %d\n", v.arr[1]);
+    printVectorHealth(&v);
+
+    freeVector(&v);
     return 0;
 }

@@ -72,10 +72,10 @@ void pushAtIndex(Vector* v, int element, size_t index){
         return;
     }
 
-    //safe check
+    //double vector size if cannot push element
     if(v->size == v->capacity){
-        printf("No more space for entering new element\n");
-        return;
+        v->capacity = (v->capacity) * 2;
+        v->arr = realloc(v->arr, v->capacity * sizeof(int));
     }
 
     //start at the valid empty slot

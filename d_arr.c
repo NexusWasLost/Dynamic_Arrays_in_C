@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 typedef struct Dynamic_Array{
     int* arr; //should point to a contiguous memory block
@@ -9,6 +10,7 @@ typedef struct Dynamic_Array{
 
 Vector init_vector();
 void freeVector(Vector* v);
+bool isVectorNULL(Vector* v);
 void printVectorHealth(Vector* v);
 void printVectorElements(Vector* v);
 void popback(Vector* v);
@@ -24,22 +26,41 @@ Vector init_vector(){
     v.capacity = 4;
     //allocated 16 bytes of heap memory
     v.arr = malloc(v.capacity * sizeof(int));
+    //malloc fail safe
+    if(v.arr == NULL){
+        v.capacity = 0;
+        return v;
+    }
+
     return v;
 }
 
+bool isVectorNULL(Vector* v){
+    return v->arr == NULL;
+}
+
 void printVectorHealth(Vector* v){
+    //guard Clause
+    if(isVectorNULL(v)){
+        printf("Vector uninitialized, Please reinitialize vector using init_vector()");
+        return;
+    }
+
     printf("Current Number of Elements Present: %d\n", v->size);
     printf("Current Vector Capacity: %d\n", v->capacity);
 }
 
 void printVectorElements(Vector* v){
+    if(isVectorNULL(v)) return;
+
     for(int x = 0; x < v->size; ++x){
         printf("Element %d: %d\n", x + 1, v->arr[x]);
     }
 }
 
 void pushback(Vector* v, int element){
-    if(v->arr == NULL){
+    //guard Clause
+    if(isVectorNULL(v)){
         printf("Vector uninitialized, Please reinitialize vector using init_vector()");
         return;
     }
@@ -57,7 +78,8 @@ void pushback(Vector* v, int element){
 }
 
 void popback(Vector* v){
-    if(v->arr == NULL){
+    //guard Clause
+    if(isVectorNULL(v)){
         printf("Vector uninitialized, Please reinitialize vector using init_vector()");
         return;
     }
@@ -67,6 +89,12 @@ void popback(Vector* v){
 }
 
 void pushAtIndex(Vector* v, int element, size_t index){
+    //guard Clause
+    if(isVectorNULL(v)){
+        printf("Vector uninitialized, Please reinitialize vector using init_vector()");
+        return;
+    }
+
     if(index >= v->size){
         printf("Not that many elements are present\n");
         return;
@@ -92,6 +120,12 @@ void pushAtIndex(Vector* v, int element, size_t index){
 }
 
 void popAtIndex(Vector* v, size_t index){
+    //guard Clause
+    if(isVectorNULL(v)){
+        printf("Vector uninitialized, Please reinitialize vector using init_vector()");
+        return;
+    }
+
     if(index >= v->size){
         printf("Not that many elements are present");
         return;
@@ -107,7 +141,12 @@ void popAtIndex(Vector* v, size_t index){
 }
 
 void freeVector(Vector* v){
-    if(v->arr == NULL) return;
+    //guard Clause
+    if(isVectorNULL(v)){
+        printf("Vector uninitialized, Please reinitialize vector using init_vector()");
+        return;
+    }
+
     free(v->arr);
     v->arr = NULL;
     v->size = 0;
@@ -127,14 +166,14 @@ int main(){
     }
 
     // printVectorElements(&v);
-    printf("Element at index 0: %d\n", v.arr[0]);
-    printf("Element at index 1: %d\n", v.arr[1]);
-    printVectorHealth(&v);
-    pushAtIndex(&v, 69, 0);
-    // printVectorElements(&v);
-    printf("Element at index 0: %d\n", v.arr[0]);
-    printf("Element at index 1: %d\n", v.arr[1]);
-    printVectorHealth(&v);
+    // printf("Element at index 0: %d\n", v.arr[0]);
+    // printf("Element at index 1: %d\n", v.arr[1]);
+    // printVectorHealth(&v);
+    // pushAtIndex(&v, 69, 0);
+    // // printVectorElements(&v);
+    // printf("Element at index 0: %d\n", v.arr[0]);
+    // printf("Element at index 1: %d\n", v.arr[1]);
+    // printVectorHealth(&v);
 
     freeVector(&v);
     return 0;

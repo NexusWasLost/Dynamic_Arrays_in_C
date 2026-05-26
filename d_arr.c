@@ -165,15 +165,15 @@ int main(){
         pushback(&v, x + 1);
     }
 
-    // printVectorElements(&v);
+    printVectorElements(&v);
     // printf("Element at index 0: %d\n", v.arr[0]);
     // printf("Element at index 1: %d\n", v.arr[1]);
-    // printVectorHealth(&v);
-    // pushAtIndex(&v, 69, 0);
-    // // printVectorElements(&v);
+    printVectorHealth(&v);
+    pushAtIndex(&v, 69, 0);
+    printVectorElements(&v);
     // printf("Element at index 0: %d\n", v.arr[0]);
     // printf("Element at index 1: %d\n", v.arr[1]);
-    // printVectorHealth(&v);
+    printVectorHealth(&v);
 
     freeVector(&v);
     return 0;
